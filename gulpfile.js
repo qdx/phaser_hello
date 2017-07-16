@@ -45,6 +45,7 @@ var source = require('vinyl-source-stream');
 var watchify = require("watchify");
 var tsify = require("tsify");
 var gutil = require("gulp-util");
+var del = require('del');
 var paths = {
     pages: ['src/*.html']
 };
@@ -62,6 +63,12 @@ gulp.task("copy-html", function () {
         .pipe(gulp.dest("dist"));
 });
 
+gulp.task('clean', function() {
+  return del(['dist/*.js'])
+})
+
+gulp.task("default", ["copy-html", 'clean'], bundle);
+
 function bundle() {
     return watchedBrowserify
         .bundle()
@@ -69,6 +76,6 @@ function bundle() {
         .pipe(gulp.dest("dist"));
 }
 
-gulp.task("default", ["copy-html"], bundle);
 watchedBrowserify.on("update", bundle);
 watchedBrowserify.on("log", gutil.log);
+
