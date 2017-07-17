@@ -50,7 +50,15 @@ playGame.prototype = {
   create: function(){
 
     // starting ARCADE physics
-    // game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.p2.setImpactEvents(true);
+    //game.physics.p2.restitution(0.8);
+
+    // group collision: https://phaser.io/examples/v2/p2-physics/collision-groups
+    //var heroCollisionGroup = game.physics.p2.createCollisionGroup();
+    //var wallCollisionGroup = game.physics.p2.createCollisionGroup();
+
+    game.physics.p2.updateBoundsCollisionGroup();
 
     // creatin of "level" tilemap
     this.map = game.add.tilemap("level");
@@ -61,19 +69,28 @@ playGame.prototype = {
     // which layer should we render? That's right, "layer01"
     this.mazeLayer = this.map.createLayer("layer01");
     this.mazeLayer.resizeWorld();
+    this.map.setCollision(1);
+
+    // tilemap collision: https://phaser.io/examples/v2/p2-physics/tilemap
+    game.physics.p2.convertTilemap(this.map, this.mazeLayer);
 
     // tile 1 (the black tile) has the collision enabled
 
     // adding the hero sprite
-    this.hero = game.add.sprite(100, 100, "hero");
+    this.hero = game.add.sprite(120, 100, "hero");
+    game.physics.p2.enable(this.hero);
+    game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+    this.hero.body.fixedRotation = true;
+
+    //this.hero.body.setCollisionGroup(heroCollisionGroup);
 
     // setting hero anchor point
-    this.hero.anchor.set(0.5);
+    //this.hero.anchor.set(0.5);
 
     // enabling ARCADE physics for the  hero
-    game.physics.enable(this.hero, Phaser.Physics.ARCADE);
+    //game.physics.enable(this.hero, Phaser.Physics.ARCADE);
 
-    this.hero.body.collideWorldBounds = true;
+    //this.hero.body.collideWorldBounds = true;
 
     this.safetile = -1;
     this.gridsize = 26;
@@ -98,7 +115,7 @@ playGame.prototype = {
       console.log(leftTile);
       if (leftTile.index == this.safetile) {
         console.log("left moving");
-        this.hero.x -= 4;
+        this.hero.body.moveLeft(100);
       }
     }
     else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
@@ -107,6 +124,7 @@ playGame.prototype = {
       if (rightTile.index == this.safetile) {
         console.log("right moving");
         this.hero.x += 4;
+        this.hero.body.moveRight(100);
       }
     }
 
@@ -116,6 +134,7 @@ playGame.prototype = {
       if (aboveTile.index == this.safetile) {
         console.log("up moving");
         this.hero.y -= 4;
+        this.hero.body.moveUp(100);
       }
     }
     else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
@@ -124,6 +143,7 @@ playGame.prototype = {
       if (belowTile.index == this.safetile) {
         console.log("down moving");
         this.hero.y += 4;
+        this.hero.body.moveDown(100);
       }
     }
   }
