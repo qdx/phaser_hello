@@ -1,0 +1,21 @@
+{
+  "name": "phaser_hello",
+  "description": "",
+  "main": "dist/main.js",
+  "authors": [
+    "Dexin Qi <qdxaaa@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/qdx/phaser_hello",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "phaser": "^2.6.2"
+  }
+}
