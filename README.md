@@ -13,6 +13,9 @@ Install [typings](https://github.com/typings/typings) globally.
 Install [bower](https://bower.io/) globally.
 `npm insatll -g bower`
 
+Install [serve](https://www.npmjs.com/package/serve) globally.
+`npm install -g serve`
+
 ## Now change directory into project directory
 
 ### npm dependencies
