@@ -37,9 +37,9 @@ preloadGame.prototype = {
     game.stage.disableVisibilityChange = true;
 
     // loading level tilemap
-    game.load.tilemap("level", 'maze.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.image("tile", "wall.png");
-    game.load.image("hero", "hero.png");
+    game.load.tilemap("level", 'assets/maze.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image("tile", "assets/wall.png");
+    game.load.image("hero", "assets/hero.png");
   },
   create: function(){
     game.state.start("PlayGame");
@@ -52,7 +52,6 @@ playGame.prototype = {
     // starting ARCADE physics
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.setImpactEvents(true);
-    //game.physics.p2.restitution(0.8);
 
     // group collision: https://phaser.io/examples/v2/p2-physics/collision-groups
     //var heroCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -69,18 +68,27 @@ playGame.prototype = {
     // which layer should we render? That's right, "layer01"
     this.mazeLayer = this.map.createLayer("layer01");
     this.mazeLayer.resizeWorld();
+    // tile 1 (the black tile) has the collision enabled
     this.map.setCollision(1);
 
     // tilemap collision: https://phaser.io/examples/v2/p2-physics/tilemap
-    game.physics.p2.convertTilemap(this.map, this.mazeLayer);
+    var tilemapBody = game.physics.p2.convertTilemap(this.map, this.mazeLayer);
+    //for (let tileBody of tilemapBody){
 
-    // tile 1 (the black tile) has the collision enabled
+    //}
+    var tilemapMaterial = game.physics.p2.createMaterial('tilemapMaterial', tilemapBody[0]);
+
 
     // adding the hero sprite
     this.hero = game.add.sprite(120, 100, "hero");
     game.physics.p2.enable(this.hero);
     game.physics.p2.setBoundsToWorld(true, true, true, true, false);
     this.hero.body.fixedRotation = true;
+    var heroMaterial = game.physics.p2.createMaterial('heroMeterial', this.hero.body);
+
+    var contactMaterial = game.physics.p2.createContactMaterial(heroMaterial)
+    contactMaterial.friction = 0;
+    contactMaterial.restitution = 0;
 
     //this.hero.body.setCollisionGroup(heroCollisionGroup);
 
@@ -115,7 +123,7 @@ playGame.prototype = {
       console.log(leftTile);
       if (leftTile.index == this.safetile) {
         console.log("left moving");
-        this.hero.body.moveLeft(100);
+        this.hero.body.moveLeft(200);
       }
     }
     else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
@@ -124,7 +132,7 @@ playGame.prototype = {
       if (rightTile.index == this.safetile) {
         console.log("right moving");
         this.hero.x += 4;
-        this.hero.body.moveRight(100);
+        this.hero.body.moveRight(200);
       }
     }
 
@@ -134,7 +142,7 @@ playGame.prototype = {
       if (aboveTile.index == this.safetile) {
         console.log("up moving");
         this.hero.y -= 4;
-        this.hero.body.moveUp(100);
+        this.hero.body.moveUp(200);
       }
     }
     else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
@@ -143,7 +151,7 @@ playGame.prototype = {
       if (belowTile.index == this.safetile) {
         console.log("down moving");
         this.hero.y += 4;
-        this.hero.body.moveDown(100);
+        this.hero.body.moveDown(200);
       }
     }
   }
